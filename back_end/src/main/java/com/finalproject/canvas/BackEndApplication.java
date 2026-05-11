@@ -1,13 +1,13 @@
-package com.blogback.blogpj;
+package com.finalproject.canvas;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BlogpjApplication {
+public class BackEndApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BlogpjApplication.class, args);
+		SpringApplication.run(BackEndApplication.class, args);
 	}
 
 }
