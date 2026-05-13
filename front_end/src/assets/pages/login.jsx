@@ -60,7 +60,7 @@ function Login() {
                                 sessionStorage.setItem('logStatus', 'Y');
                                 sessionStorage.setItem('logId', response.data.userid);
                                 sessionStorage.setItem('logName', response.data.username);
-                                sessionStorage.setItem('userType', response.data.usertype);
+                                sessionStorage.setItem('usertype', response.data.usertype);
 
 
 

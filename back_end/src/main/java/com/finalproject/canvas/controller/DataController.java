@@ -139,18 +139,40 @@ public class DataController {
         return "OK";
     }
     //회원선택
-    @PostMapping("/getJoins")
+    @PostMapping("/getmember")
     public DataEntity getData(@RequestBody DataEntity entity){
         log.info("회원선택=>"+entity.getUserid());
         return dataService.dataSelect(entity.getUserid());
     }
     //회원수정
-    @PostMapping("/joinsEdit")
-    public DataEntity dataEdit(@RequestBody DataEntity entity){
-        log.info("회원수정확인->"+entity.toString());
+    @GetMapping("/edit")
+    public ResponseEntity<?> getEditData(@RequestParam("userid") String userid, @RequestParam("usertype") String usertype) {
+        log.info("수정 데이터 조회 요청 -> ID: {}, Type: {}", userid, usertype);
 
-        return dataService.dataUpdate(entity);
+        if ("PERSONAL".equals(usertype)) {
+            DataEntity user = dataService.dataSelect(userid);
+            if (user != null) return ResponseEntity.ok(user);
+        } else if ("BUSINESS".equals(usertype)) {
+            CpDataEntity biz = dataService.businessSelect(userid);
+            if (biz != null) return ResponseEntity.ok(biz);
+        }
+
+        return ResponseEntity.status(404).body("사용자 정보를 찾을 수 없습니다.");
     }
+
+    @PostMapping("/business/Edit")
+    public ResponseEntity<?> businessEdit(@RequestBody CpDataEntity entity) {
+        log.info("기업 회원 수정 요청 -> ID: {}", entity.getUserid());
+
+        CpDataEntity updated = dataService.businessUpdate(entity);
+
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
+        } else {
+            return ResponseEntity.status(401).body("비밀번호가 일치하지 않거나 사업자 정보를 찾을 수 없습니다.");
+        }
+    }
+
     //회원탈퇴
     //is_out만 탈퇴 형식으로 바꾸기
     @PatchMapping("/unregister/{id}")
