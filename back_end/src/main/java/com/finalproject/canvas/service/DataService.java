@@ -6,6 +6,7 @@ import com.finalproject.canvas.repository.CpDataRepository;
 import com.finalproject.canvas.repository.DataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,18 +40,41 @@ public class DataService {
         return cpDataRepository.findByUseridAndUserpwd(userid, userpwd);
     }
 
-    // 일반 회원 선택
+    // 일반 회원 조회
     public DataEntity dataSelect(String userid) {
         return dataRepository.findByUserid(userid);
     }
+    // 기업 회원 조회
+    public CpDataEntity businessSelect(String userid) {
+        return cpDataRepository.findByUserid(userid);
+    }
 
     // 일반 회원 정보 수정
+    @Transactional
     public DataEntity dataUpdate(DataEntity entity) {
+        // DB에서 기존 정보를 가져옴
         DataEntity orgEntity = dataRepository.findByUserid(entity.getUserid());
 
-        // 비밀번호 일치 확인
         if (orgEntity != null && entity.getUserpwd().equals(orgEntity.getUserpwd())) {
+            // 비밀번호가 일치하면 업데이트 수행
+            entity.setMId(orgEntity.getMId()); // 기존의 PK를 세팅해줌
             return dataRepository.save(entity);
+        } else {
+            // 3. 비밀번호 불일치 혹은 회원이 없음
+            return null;
+        }
+    }
+
+    // 기업 회원 수정
+    @Transactional
+    public CpDataEntity businessUpdate(CpDataEntity entity) {
+        // DB에서 기존 기업 정보 가져옴
+        CpDataEntity orgEntity = cpDataRepository.findByUserid(entity.getUserid());
+
+        if (orgEntity != null && entity.getUserpwd().equals(orgEntity.getUserpwd())) {
+            // 비밀번호 일치 시 업데이트
+            entity.setCId(orgEntity.getCId()); // 기존 기업 PK(c_id) 세팅
+            return cpDataRepository.save(entity);
         } else {
             return null;
         }
