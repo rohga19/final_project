@@ -2,6 +2,7 @@ package com.finalproject.canvas.controller;
 
 import com.finalproject.canvas.entity.CpDataEntity;
 import com.finalproject.canvas.entity.DataEntity;
+import com.finalproject.canvas.entity.SearchVO;
 import com.finalproject.canvas.service.DataService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -185,12 +186,24 @@ public class DataController {
     }
 
     //모든 회원 정보 가져오기 (관리자 페이지)
-    @GetMapping("/all")
+    @GetMapping("/all/member")
     public List<DataEntity> getMembers(){
         return dataService.getAllMembers();
     }
     @GetMapping("/all/business")
     public List<CpDataEntity> getCpMembers(){
         return dataService.getAllCpMembers();
+    }
+    //일반회원 검색
+    @PostMapping("/search")
+    public List<DataEntity> searchMembers(@RequestBody SearchVO searchVO){
+        log.info("회원검색=>"+searchVO.toString());
+        return dataService.searchMembers(searchVO);
+    }
+    //기업회원 검색
+    @PostMapping("/search/business")
+    public List<CpDataEntity> searchCpMembers(@RequestBody SearchVO searchVO){
+        log.info("기업검색=>"+searchVO.toString());
+        return dataService.searchCpMembers(searchVO);
     }
 }

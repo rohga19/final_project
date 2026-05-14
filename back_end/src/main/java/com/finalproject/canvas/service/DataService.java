@@ -2,8 +2,10 @@ package com.finalproject.canvas.service;
 
 import com.finalproject.canvas.entity.CpDataEntity;
 import com.finalproject.canvas.entity.DataEntity;
+import com.finalproject.canvas.entity.SearchVO;
 import com.finalproject.canvas.repository.CpDataRepository;
 import com.finalproject.canvas.repository.DataRepository;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +105,31 @@ public class DataService {
     public List<CpDataEntity> getAllCpMembers(){
         return cpDataRepository.findAll();
     }
+    
+    //일반회원 검색
+    public List<DataEntity> searchMembers(SearchVO searchVO){
+        String key = searchVO.getSearchKey();
+        String word = searchVO.getSearchWord();
 
+        if(word == null || word.isBlank()) return dataRepository.findAll();
 
+        if ("userid".equals(key)) return dataRepository.findByUseridContaining(word);
+        else if ("username".equals(key)) return dataRepository.findByUsernameContaining(word);
+        else if ("email".equals(key)) return dataRepository.findByEmailContaining(word);
+        else if ("tel".equals(key)) return dataRepository.findByTelContaining(word);
+        else return dataRepository.findByUseridContaining(word);
+    }
+    //기업회원 검색
+    public List<CpDataEntity> searchCpMembers(SearchVO searchVO) {
+        String key = searchVO.getSearchKey();
+        String word = searchVO.getSearchWord();
 
+        if (word == null || word.isBlank()) return cpDataRepository.findAll();
+
+        if ("userid".equals(key)) return cpDataRepository.findByUseridContaining(word);
+        else if ("businessName".equals(key)) return cpDataRepository.findByBusinessNameContaining(word);
+        else if ("email".equals(key)) return cpDataRepository.findByEmailContaining(word);
+        else if ("tel".equals(key)) return cpDataRepository.findByTelContaining(word);
+        else return cpDataRepository.findByUseridContaining(word);
+    }
 }
